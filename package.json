@@ -1,0 +1,21 @@
+{
+  "name": "poc-settle-via-safe",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "prettier --check .",
+    "lint:fix": "prettier -- write ."
+  },
+  "prettier": "@checkernetwork/prettier-config",
+  "devDependencies": {
+    "@checkernetwork/prettier-config": "^1.0.1",
+    "@ethersproject/abi": "^5.8.0",
+    "@fil-b/filfox-verifier": "^1.0.3",
+    "@safe-global/api-kit": "^4.0.0",
+    "@safe-global/protocol-kit": "^6.1.1",
+    "@safe-global/types-kit": "^3.0.0",
+    "@types/node": "^24.3.0",
+    "prettier": "^3.5.3"
+  }
+}
