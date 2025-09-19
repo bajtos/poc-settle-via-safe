@@ -18,6 +18,23 @@ const paymentsAbi = [
       string memory note
     )
   `,
+  `
+  function getRail(uint256 railId)
+    returns (tuple(
+      address token,
+      address from,
+      address to,
+      address operator,
+      address validator,
+      uint256 paymentRate,
+      uint256 lockupPeriod,
+      uint256 lockupFixed,
+      uint256 settledUpTo,
+      uint256 endEpoch,
+      uint256 commissionRateBps,
+      address serviceFeeRecipient,
+    ))
+  `,
 ]
 
 const paymentsIface = new Interface(paymentsAbi)
@@ -55,6 +72,55 @@ if (!railId) {
 if (!untilEpoch) {
   throw new Error('untilEpoch (2nd argument) not set')
 }
+
+const res = await fetch(RPC_URL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'eth_call',
+    params: [
+      {
+        to: PAYMENTS_CONTRACT_ADDRESS,
+        data: paymentsIface.encodeFunctionData('getRail', [BigInt(railId)]),
+      },
+      'latest',
+    ],
+  }),
+})
+const json = await res.json()
+if (json.error) {
+  console.error('Error calling getRail():', json.error)
+  process.exit(1)
+}
+const [
+  token,
+  from,
+  to,
+  operator,
+  validator,
+  paymentRate,
+  lockupPeriod,
+  lockupFixed,
+  settledUpTo,
+  endEpoch,
+  commissionRateBps,
+  serviceFeeRecipient,
+] = paymentsIface.decodeFunctionResult('getRail', json.result)[0]
+console.log('RAIL DATA:', {
+  from,
+  to,
+  operator,
+  validator,
+  settledUpTo: settledUpTo.toString(),
+  endEpoch: endEpoch.toString(),
+  paymentRate: paymentRate.toString(),
+  lockupPeriod: lockupPeriod.toString(),
+  lockupFixed: lockupFixed.toString(),
+})
 
 // Initialize the Protocol Kit with Owner A
 const safeKit = await Safe.init({
