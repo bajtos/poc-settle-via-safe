@@ -144,7 +144,7 @@ console.log('IS SIGNER AN OWNER?', await safeKit.isOwner(signerAddress))
 
 const safeTransactionData: MetaTransactionData = {
   to: PAYMENTS_CONTRACT_ADDRESS,
-  value: '0',
+  value: '1300000000000000', // 0.0013 FIL network fee in attoFIL
   data: paymentsIface.encodeFunctionData('settleRail', [
     BigInt(railId),
     BigInt(untilEpoch),
